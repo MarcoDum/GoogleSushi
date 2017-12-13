@@ -148,6 +148,8 @@ router.all('*', function (req, res, next) {
       }
     });
       break;
+      case 'budget.budget-more' :
+      break;
     default:
       res.json({
         speech: 'Je n\'ai pas compris',
