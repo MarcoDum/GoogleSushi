@@ -17,6 +17,14 @@ var googleMapsClient = require('@google/maps').createClient({
   Promise: Promise // 'Promise' is the native constructor.
 });
 
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 router.all('*', function (req, res, next) {
   console.log(req.body.result.parameters);
   
@@ -76,10 +84,12 @@ router.all('*', function (req, res, next) {
     });
             
       break;
-    case 'price':
+    case 'budget':
       // Sur le site de sushi shop -> cheerio -> récupérer le prix 
-      var price_max = 15;
-      var price_min = 11;
+      
+      var price_max = req.body.result.parameters['price-max'];
+      var price_min = req.body.result.parameters['price-min'];
+      
       console.log(req.body.result.parameters.product);
       fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
         if (err) {
@@ -89,8 +99,9 @@ router.all('*', function (req, res, next) {
       if (products.length) {
           let text = products.length 
           + ' correspondent à votre budget : ' 
-          + products.map(p => { return p.name + ' à ' + p.price_ttc_vae + ' euros';}).join(', ').slice(0, 5);
+          + shuffle(products).map(p => { return p.name + ' à ' + p.price_ttc_vae + ' euros';}).slice(0, 5).join(', ');
         console.log(text); 
+        
             
         res.json({
           speech: text,
