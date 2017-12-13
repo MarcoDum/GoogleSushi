@@ -119,8 +119,8 @@ router.all('*', function (req, res, next) {
     });
       break;
     case 'budget.budget-custom' :
-      var price_max = Number(req.body.result.contexts.parameters['price-max']);
-      var price_min = Number(req.body.result.contexts.parameters['price-min']);
+      var price_max = Number(req.body.result.context.parameters['price-max']);
+      var price_min = Number(req.body.result.context.parameters['price-min']);
       var product = Number(req.body.result.parameters['product']);
       //console.log(req.body.result.contexts.parameters);
       fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
