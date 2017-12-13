@@ -55,10 +55,11 @@ router.all('*', function (req, res, next) {
           if (err) {
             return console.log(err);
           }
+          //"time":{"vae":{"now":[{"time_deb_am":"12:00","time_end_am":"15:00","time_deb_pm":"17:30","time_end_pm":"22:00"},
         var cities = JSON.parse(data).filter(el => {return el.id_postcode == shop.id_postcode;});
         if (cities.length) {
           res.json({
-            speech: 'Le plus proche est à  ' + cities[0].name,
+            speech: 'Le plus proche est Sushi Shop ' + cities[0].name + '. Quel est votre budget ?',
             source: 'webhook'
           });
         }
@@ -89,8 +90,7 @@ router.all('*', function (req, res, next) {
       
       var price_max = req.body.result.parameters['price-max'];
       var price_min = req.body.result.parameters['price-min'];
-      
-      console.log(req.body.result.parameters.product);
+      console.log(req.body.result.parameters);
       fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
         if (err) {
           return console.log(err);
