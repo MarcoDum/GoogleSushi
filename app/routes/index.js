@@ -127,7 +127,7 @@ router.all('*', function (req, res, next) {
         if (err) {
           return console.log(err);
         }
-      var products = JSON.parse(data).filter(el => {return (el.name.includes(product) || el['description_short'].includes(product)) && el.price_ttc_vae > price_min && el.price_ttc_vae < price_max;});
+      var products = JSON.parse(data).filter(el => {return (el.name.toLowerCase().includes(product) || (el.description_short && el.description_short.toLowerCase().includes(product))) && el.price_ttc_vae > price_min && el.price_ttc_vae < price_max;});
       if (products.length) {
           let text = products.length 
           + product + ' correspondent à votre budget : ' 
