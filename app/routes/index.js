@@ -117,27 +117,35 @@ router.all('*', function (req, res, next) {
     });
       break;
     case 'budget.budget-custom' :
-    var price_max = Number(req.body.result.contexts.parameters['price-max']);
-    var price_min = Number(req.body.result.contexts.parameters['price-min']);
-    var product = Number(req.body.result.parameters['product']);
-    console.log(req.body.result.contexts.parameters);
-    fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
-      if (err) {
-        return console.log(err);
+      var price_max = Number(req.body.result.contexts.parameters['price-max']);
+      var price_min = Number(req.body.result.contexts.parameters['price-min']);
+      var product = Number(req.body.result.parameters['product']);
+      console.log(req.body.result.contexts.parameters);
+      fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
+        if (err) {
+          return console.log(err);
+        }
+      var products = JSON.parse(data).filter(el => {return el.name.includes(product) && el.price_ttc_vae > price_min && el.price_ttc_vae < price_max;});
+      if (products.length) {
+          let text = products.length 
+          + product + ' correspondent à votre budget : ' 
+          + shuffle(products).map(p => { return p.name + ' à ' + p.price_ttc_vae + ' euros';}).slice(0, 5).join(', ');
+        console.log(text); 
+        
+            
+        res.json({
+          speech: text,
+          source: 'webhook'
+        }); 
       }
-    var products = JSON.parse(data).filter(el => {return el.name.includes(product) && el.price_ttc_vae > price_min && el.price_ttc_vae < price_max;});
-    if (products.length) {
-        let text = products.length 
-        + product + ' correspondent à votre budget : ' 
-        + shuffle(products).map(p => { return p.name + ' à ' + p.price_ttc_vae + ' euros';}).slice(0, 5).join(', ');
-      console.log(text); 
-      
-          
-      res.json({
-        speech: text,
-        source: 'webhook'
-      }); 
-    break;
+      else {
+        res.json({
+          speech: 'je n\'ai pas trouvé de produit dans cette fourchette de prix',
+          source: 'webhook'
+        }); 
+      }
+    });
+      break;
     default:
       res.json({
         speech: 'Je n\'ai pas compris',
