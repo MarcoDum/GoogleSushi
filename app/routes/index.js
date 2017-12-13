@@ -19,16 +19,17 @@ var googleMapsClient = require('@google/maps').createClient({
 
 router.all('*', function (req, res, next) {
   console.log(req.body.result.parameters);
-  let search = '';
-  if (req.body.result.parameters['street-address'] && req.body.result.parameters['geo-city']) {
-    search = req.body.result.parameters['street-address'] + ', ' + req.body.result.parameters['geo-city'];
-  }
-  else {
-    search = req.body.result.parameters['geo-city-fr'];
-  }
-  console.log(search);
+  
   switch (req.body.result.action) {
     case 'location':
+    let search = '';
+    if (req.body.result.parameters['street-address'] && req.body.result.parameters['geo-city']) {
+      search = req.body.result.parameters['street-address'] + ', ' + req.body.result.parameters['geo-city'];
+    }
+    else {
+      search = req.body.result.parameters['geo-city-fr'];
+    }
+    console.log(search);
     googleMapsClient.geocode({address: search}).asPromise()
     .then((response) => {
       var address = encodeURIComponent(response.json.results[0].formatted_address);
@@ -73,28 +74,36 @@ router.all('*', function (req, res, next) {
     .catch((err) => {
       console.log(err);
     });
-      /* geonames.postalCodeLookup({postalcode: '77590', country: 'FR'}) //
-      .then(function(resp){
-        console.log(resp.postalcodes.map(element => {
-          return element.placeName;
-        }));
-        res.json({
-        speech: 'Le plus proche est à .... ',
-        source: 'webhook'
-      });
-      })
-      .catch(function(err){
-        console.log(err);
-      }) */
-      
+            
       break;
     case 'price':
       // Sur le site de sushi shop -> cheerio -> récupérer le prix 
+      var price_max = 15;
+      var price_min = 11;
       console.log(req.body.result.parameters.product);
-      res.json({
-        speech: 'Le prix est ...',
-        source: 'webhook'
-      });
+      fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
+        if (err) {
+          return console.log(err);
+        }
+      var products = JSON.parse(data).filter(el => {return el.price_ttc_vae > price_min && el.price_ttc_vae < price_max;});
+      if (products.length) {
+          let text = products.length 
+          + ' correspondent à votre budget : ' 
+          + products.map(p => { return p.name + ' à ' + p.price_ttc_vae + ' euros';}).join(', ').slice(0, 5);
+        console.log(text); 
+            
+        res.json({
+          speech: text,
+          source: 'webhook'
+        }); 
+      }
+      else {
+        res.json({
+          speech: 'je n\'ai pas trouvé de produit dans cette fourchette de prix',
+          source: 'webhook'
+        }); 
+      }
+    });
       break;
 
     default:
