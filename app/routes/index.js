@@ -98,7 +98,7 @@ router.all('*', function (req, res, next) {
       var products = JSON.parse(data).filter(el => {return el.price_ttc_vae > price_min && el.price_ttc_vae < price_max;});
       if (products.length) {
           let text = products.length 
-          + ' correspondent à votre budget : ' 
+          + ' produits correspondent à votre budget : ' 
           + shuffle(products).map(p => { return p.name + ' à ' + p.price_ttc_vae + ' euros';}).slice(0, 5).join(', ');
         console.log(text); 
         
@@ -116,7 +116,8 @@ router.all('*', function (req, res, next) {
       }
     });
       break;
-
+    case 'budget.budget-more' :
+    break;
     default:
       res.json({
         speech: 'Je n\'ai pas compris',
