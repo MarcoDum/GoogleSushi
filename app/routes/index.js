@@ -116,13 +116,13 @@ router.all('*', function (req, res, next) {
           source: 'webhook'
         }); 
       }
-    });
+    }); 
       break;
     case 'budget.budget-custom' :
       var price_max = Number(req.body.result.context.parameters['price-max']);
       var price_min = Number(req.body.result.context.parameters['price-min']);
       var product = Number(req.body.result.parameters['product']);
-      //console.log(req.body.result.contexts.parameters);
+      console.log(price_max, price_min, product);
       fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
         if (err) {
           return console.log(err);
@@ -142,7 +142,7 @@ router.all('*', function (req, res, next) {
       }
       else {
         res.json({
-          speech: 'je n\'ai pas trouvé de produit dans cette fourchette de prix',
+          speech: 'je n\'ai pas trouvé de ' + product + ' dans cette fourchette de prix',
           source: 'webhook'
         }); 
       }
