@@ -26,7 +26,9 @@ function shuffle(a) {
 }
 
 router.all('*', function (req, res, next) {
-  console.log(req.body.result.parameters);
+  console.log('action : ',req.body.result.action);
+  console.log('parameters : ', req.body.result.parameters);
+  console.log('context : ', req.body.result.contexts);
   
   switch (req.body.result.action) {
     case 'location':
@@ -120,7 +122,7 @@ router.all('*', function (req, res, next) {
       var price_max = Number(req.body.result.contexts.parameters['price-max']);
       var price_min = Number(req.body.result.contexts.parameters['price-min']);
       var product = Number(req.body.result.parameters['product']);
-      console.log(req.body.result.contexts.parameters);
+      //console.log(req.body.result.contexts.parameters);
       fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
         if (err) {
           return console.log(err);
