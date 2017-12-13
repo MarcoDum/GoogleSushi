@@ -86,8 +86,10 @@ router.all('*', function (req, res, next) {
       break;
     case 'budget':
       // Sur le site de sushi shop -> cheerio -> récupérer le prix 
-      var price_max = req.body.result.parameters['number'];
-      var price_min = req.body.result.parameters['number'];
+      
+      var price_max = req.body.result.parameters['price-max'];
+      var price_min = req.body.result.parameters['price-min'];
+      
       console.log(req.body.result.parameters.product);
       fs.readFile(path.join(__dirname, 'products.json'), 'utf8', function (err,data) {
         if (err) {
