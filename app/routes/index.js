@@ -88,6 +88,7 @@ router.all('*', function (req, res, next) {
             
       break;
     case 'budget':
+    case 'budget.budget-more' :
       // Sur le site de sushi shop -> cheerio -> récupérer le prix 
       
       var price_max = Number(req.body.result.parameters['price-max']);
@@ -148,8 +149,7 @@ router.all('*', function (req, res, next) {
       }
     });
       break;
-      case 'budget.budget-more' :
-      break;
+     
     default:
       res.json({
         speech: 'Je n\'ai pas compris',
